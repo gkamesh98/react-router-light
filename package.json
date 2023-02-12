@@ -2,29 +2,40 @@
   "name": "react-router-light",
   "version": "1.0.0",
   "description": "Lighter version of react-router with easy to use and integrate with added features like middleware.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src --out-dir dist"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gkamesh98/react-router-light.git"
   },
   "keywords": [
-   "react-router",
-   "react-router-light",
-   "react-router-lite",
-   "react",
-   "router"
+    "react-router",
+    "react-router-light",
+    "react-router-lite",
+    "react",
+    "router"
   ],
   "author": "Kamesh Gullapalli",
   "license": "MIT",
   "peerDependencies": {
-    "react": ">=16.0.0",
-    "react-dom": ">=16.0.0"
+    "react": ">=16.13.1",
+    "react-dom": ">=16.13.1"
   },
   "bugs": {
     "url": "https://github.com/gkamesh98/react-router-light/issues"
   },
-  "homepage": "https://github.com/gkamesh98/react-router-light#readme"
+  "homepage": "https://github.com/gkamesh98/react-router-light#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.20.7",
+    "@babel/core": "^7.20.12",
+    "@babel/plugin-syntax-jsx": "^7.18.6",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-react": "^7.18.6"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.12.1"
+  }
 }
