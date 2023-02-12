@@ -58,6 +58,7 @@ export const RouterProvide = ({
   useEffect(() => {
     if (window.location.pathname === "/") {
       window.history.pushState(window.history.state, "", homePath);
+      routeConfig.currentPathname = homePath
     }
   }, [homePath]);
 
