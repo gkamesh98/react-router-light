@@ -127,7 +127,7 @@ export const Route = ({
   element,
   path,
   middleware = [],
-  redirectIfNotSatisified,
+  redirectIfNotSatisfied,
 }) => {
   const { loadingUI: LoadingUI } = useContext(RouteContext);
   const matched = usePathMatcher(path);
@@ -146,10 +146,11 @@ export const Route = ({
       if (isSuccessFull) {
         setIsSafied(isSuccessFull);
       } else {
-        routeConfig.currentPath = redirectIfNotSatisified;
+        window.history.pushState(null, "", redirectIfNotSatisfied);
+        routeConfig.currentPath = redirectIfNotSatisfied;
       }
     }
-  }, [path, matched, middleware, redirectIfNotSatisified]);
+  }, [path, matched, middleware, redirectIfNotSatisfied]);
 
   if (matched) {
     if (!satisified) {

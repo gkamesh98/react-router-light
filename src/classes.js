@@ -1,3 +1,5 @@
+import { serialize } from "./functions";
+
 class RouterClass {
   // variables
   #currentPathname = "";
@@ -105,6 +107,7 @@ class RouterClass {
   set currentPathname(pathname) {
     if (this.#currentPathname.toString() !== pathname.toString()) {
       this.#currentPathname = pathname;
+      window.history.pushState(null, "", pathname);
       this.#triggerCurrentPathnameFunctions();
     }
   }
@@ -116,6 +119,17 @@ class RouterClass {
   set queryParams(queryParam) {
     if (this.#queryParams.toString() !== queryParam.toString()) {
       this.#queryParams = queryParam;
+      const suffix = (() => {
+        if (
+          (search || hash) &&
+          typeof (search || hash) === "object" &&
+          Object.keys(search || hash).length
+        ) {
+          return '?' + serialize(search);
+        }
+        return "";
+      })();
+      window.history.pushState(null, "", this.#currentPathname + suffix);
       this.#triggerQueryParamsFunctions();
     }
   }

@@ -52,3 +52,7 @@ export const useQueryParams = () => {
   const { queryParams } = useRouter();
   return queryParams;
 };
+
+export const useBrowserState = () => {
+  return window.history.state
+}

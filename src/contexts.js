@@ -2,8 +2,8 @@ import React, { createContext } from "react";
 
 export const RouterContext = createContext({
   params: {},
-  pathname: '/',
-  queryParams: {}
+  queryParams: {},
+  navigate: {}
 })
 
 export const RouteContext = createContext({
