@@ -17,10 +17,11 @@ yarn add react-router-light
 ## using
 
 **Router** is to set to manage the children ```Route```
-**Router** accepts the ```loadingUI``` and ```homePath```
+**Router** accepts the ```loadingUI```, ```homePath``` and ```notFoundUI```
 
 ```loadingUI``` is a component which is used for Route to render as chunks and provides a UX.
 ```homePath``` is setting the default path if no path is available default is '\'
+```notFoundUI``` can be either component or element. This will be displayed when a page is not found in the *Route* specified path's
 
 
 **Route** is a component which maintains individual routes

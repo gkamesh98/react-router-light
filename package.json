@@ -1,6 +1,6 @@
 {
   "name": "react-router-light",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Lighter version of react-router with easy to use and integrate with added features like middleware.",
   "main": "dist/index.js",
   "scripts": {
@@ -34,6 +34,7 @@
     "@babel/core": "^7.20.12",
     "@babel/plugin-syntax-jsx": "^7.18.6",
     "@babel/preset-env": "^7.20.2",
-    "@babel/preset-react": "^7.18.6"
+    "@babel/preset-react": "^7.18.6",
+    "babel-preset-minify": "^0.5.2"
   }
 }

@@ -4,17 +4,24 @@ class RouterClass {
   // variables
   #currentPathname = "";
   #currentPath = "";
+  #currentState = null;
+  #queryParams = {};
+
+  #serializedSearch = '';
 
   #pathUpdateFunctions = new Map();
   #pathnameUpdateFunctions = new Map();
   #queryParamsUpdateFunctions = new Map();
+  #currentStateUpdateFunctions = new Map();
 
-  #queryParams = {};
 
   // functions
 
   init(currentPathname) {
-    this.#currentPathname = currentPathname;
+    this.currentPathname = currentPathname;
+    this.currentPath = '';
+    this.queryParams = {};
+    this.currentState = null;
   }
 
   onCurrentPathUpdate(callback) {
@@ -47,6 +54,18 @@ class RouterClass {
       return () => {
         if (this.#queryParamsUpdateFunctions.has(callback.toString())) {
           this.#queryParamsUpdateFunctions.delete(callback.toString());
+        }
+      };
+    }
+    return () => {};
+  }
+
+  onCurrentStateUpdate(callback) {
+    if (typeof callback === "function") {
+      this.#currentStateUpdateFunctions.set(callback.toString(), callback);
+      return () => {
+        if (this.#currentStateUpdateFunctions.has(callback.toString())) {
+          this.#currentStateUpdateFunctions.delete(callback.toString());
         }
       };
     }
@@ -87,6 +106,12 @@ class RouterClass {
     });
   }
 
+  #triggerCurrentStateFunctions(){
+    this.#currentStateUpdateFunctions.forEach((callback) => {
+      callback();
+    });
+  }
+
   // getter and setter
 
   get currentPathname() {
@@ -106,6 +131,11 @@ class RouterClass {
 
   set currentPathname(pathname) {
     if (this.#currentPathname.toString() !== pathname.toString()) {
+      // resetting
+      this.currentPath = '';
+      this.queryParams = {};
+      this.currentState = null;
+
       this.#currentPathname = pathname;
       window.history.pushState(null, "", pathname);
       this.#triggerCurrentPathnameFunctions();
@@ -117,21 +147,32 @@ class RouterClass {
   }
 
   set queryParams(queryParam) {
-    if (this.#queryParams.toString() !== queryParam.toString()) {
+    if (JSON.stringify(this.#queryParams) !== JSON.stringify(queryParam)) {
       this.#queryParams = queryParam;
-      const suffix = (() => {
+      this.#serializedSearch = (() => {
         if (
-          (search || hash) &&
-          typeof (search || hash) === "object" &&
-          Object.keys(search || hash).length
+          (queryParam) &&
+          typeof (queryParam) === "object" &&
+          Object.keys(queryParam).length
         ) {
-          return '?' + serialize(search);
+          return '?' + serialize(queryParam);
         }
         return "";
       })();
-      window.history.pushState(null, "", this.#currentPathname + suffix);
+      window.history.pushState(this.#currentState, "", this.#currentPathname + this.#serializedSearch);
       this.#triggerQueryParamsFunctions();
     }
+  }
+
+  get currentState(){
+    return this.#currentState
+  }
+
+  set currentState(state){
+    if(JSON.stringify(state) !== JSON.stringify(this.#currentState))
+    this.#currentState = state
+    window.history.pushState(this.#currentState, "", this.#currentPathname + this.#serializedSearch);
+    this.#triggerCurrentStateFunctions()
   }
 }
 
