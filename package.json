@@ -1,6 +1,6 @@
 {
   "name": "react-router-light",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Lighter version of react-router with easy to use and integrate with added features like middleware.",
   "main": "dist/index.js",
   "scripts": {
