@@ -8,6 +8,8 @@ const {
   onCurrentPathUpdate,
   onCurrentPathnameUpdate,
   onQueryParamUpdate,
+  onCurrentStateUpdate,
+  onHashUpdate,
 } = routeConfig;
 
 export { RouterProvide as default } from "./components";
@@ -22,4 +24,6 @@ export {
   onCurrentPathUpdate,
   onCurrentPathnameUpdate,
   onQueryParamUpdate,
+  onCurrentStateUpdate,
+  onHashUpdate,
 };

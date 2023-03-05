@@ -6,6 +6,7 @@ class RouterClass {
   #currentPath = "";
   #currentState = null;
   #queryParams = {};
+  #currentHash = null;
 
   #serializedSearch = '';
 
@@ -13,63 +14,37 @@ class RouterClass {
   #pathnameUpdateFunctions = new Map();
   #queryParamsUpdateFunctions = new Map();
   #currentStateUpdateFunctions = new Map();
+  #currentHashUpdateFunctions = new Map();
 
 
   // functions
 
-  init(currentPathname) {
-    this.currentPathname = currentPathname;
+  init({pathname = '/', hash = null, state = {}, queryParams = {}} = {}) {
+    this.currentPathname = pathname;
     this.currentPath = '';
-    this.queryParams = {};
-    this.currentState = null;
+    this.queryParams = queryParams;
+    this.currentState = state;
+    this.hash = hash;
   }
 
   onCurrentPathUpdate(callback) {
-    if (typeof callback === "function") {
-      this.#pathUpdateFunctions.set(callback.toString(), callback);
-      return () => {
-        if (this.#pathUpdateFunctions.has(callback.toString())) {
-          this.#pathUpdateFunctions.delete(callback.toString());
-        }
-      };
-    }
-    return () => {};
+    return this.#callbackUpdater(callback, this.#pathUpdateFunctions)
   }
 
   onCurrentPathnameUpdate(callback) {
-    if (typeof callback === "function") {
-      this.#pathnameUpdateFunctions.set(callback.toString(), callback);
-      return () => {
-        if (this.#pathnameUpdateFunctions.has(callback.toString())) {
-          this.#pathnameUpdateFunctions.delete(callback.toString());
-        }
-      };
-    }
-    return () => {};
+    return this.#callbackUpdater(callback, this.#pathnameUpdateFunctions)
   }
 
   onQueryParamUpdate(callback) {
-    if (typeof callback === "function") {
-      this.#queryParamsUpdateFunctions.set(callback.toString(), callback);
-      return () => {
-        if (this.#queryParamsUpdateFunctions.has(callback.toString())) {
-          this.#queryParamsUpdateFunctions.delete(callback.toString());
-        }
-      };
-    }
-    return () => {};
+    return this.#callbackUpdater(callback, this.#queryParamsUpdateFunctions)
   }
 
   onCurrentStateUpdate(callback) {
-    if (typeof callback === "function") {
-      this.#currentStateUpdateFunctions.set(callback.toString(), callback);
-      return () => {
-        if (this.#currentStateUpdateFunctions.has(callback.toString())) {
-          this.#currentStateUpdateFunctions.delete(callback.toString());
-        }
-      };
-    }
-    return () => {};
+    return this.#callbackUpdater(callback, this.#currentStateUpdateFunctions)
+  }
+
+  onHashUpdate(callback){
+    return this.#callbackUpdater(callback, this.#currentHashUpdateFunctions)
   }
 
   getParams() {
@@ -89,28 +64,26 @@ class RouterClass {
   }
 
   #triggerCurrentPathFunctions() {
-    this.#pathUpdateFunctions.forEach((callback) => {
-      callback();
-    });
+    this.#triggerFunction(this.#pathUpdateFunctions)
   }
 
   #triggerCurrentPathnameFunctions() {
-    this.#pathnameUpdateFunctions.forEach((callback) => {
-      callback();
-    });
+    this.#triggerFunction(this.#pathnameUpdateFunctions);
   }
 
   #triggerQueryParamsFunctions() {
-    this.#queryParamsUpdateFunctions.forEach((callback) => {
-      callback();
-    });
+    this.#triggerFunction(this.#queryParamsUpdateFunctions);
   }
 
   #triggerCurrentStateFunctions(){
-    this.#currentStateUpdateFunctions.forEach((callback) => {
-      callback();
-    });
+    this.#triggerFunction(this.#currentStateUpdateFunctions);
   }
+
+
+  #triggerCurrentHashFunction(){
+    this.#triggerFunction(this.#currentHashUpdateFunctions);
+  }
+
 
   // getter and setter
 
@@ -135,6 +108,7 @@ class RouterClass {
       this.currentPath = '';
       this.queryParams = {};
       this.currentState = null;
+      this.hash = null;
 
       this.#currentPathname = pathname;
       window.history.pushState(null, "", pathname);
@@ -159,7 +133,7 @@ class RouterClass {
         }
         return "";
       })();
-      window.history.pushState(this.#currentState, "", this.#currentPathname + this.#serializedSearch);
+      this.#settingPath()
       this.#triggerQueryParamsFunctions();
     }
   }
@@ -169,10 +143,46 @@ class RouterClass {
   }
 
   set currentState(state){
-    if(JSON.stringify(state) !== JSON.stringify(this.#currentState))
-    this.#currentState = state
-    window.history.pushState(this.#currentState, "", this.#currentPathname + this.#serializedSearch);
-    this.#triggerCurrentStateFunctions()
+    if(JSON.stringify(state) !== JSON.stringify(this.#currentState)){
+      this.#currentState = state
+      this.#settingPath()
+      this.#triggerCurrentStateFunctions()
+    }
+   
+  }
+
+  set hash(value){
+    if(this.#currentHash !== value){
+      this.#currentHash = value
+      this.#settingPath()
+      this.#triggerCurrentHashFunction()
+    }
+  }
+
+  get hash(){
+    return this.#currentHash
+  }
+
+  #settingPath(){
+    window.history.pushState(this.#currentState, "", this.#currentPathname + this.#serializedSearch + (this.#currentHash ? `#${this.#currentHash}` : ''));
+  }
+
+  #callbackUpdater(callback, map){
+    if (typeof callback === "function") {
+      map.set(callback.toString(), callback);
+      return () => {
+        if (map.has(callback.toString())) {
+          map.delete(callback.toString());
+        }
+      };
+    }
+    return () => {};
+  }
+
+  #triggerFunction(map){
+    map.forEach((callback) => {
+      callback()
+    })
   }
 }
 

@@ -3,7 +3,9 @@ import React, { createContext } from "react";
 export const RouterContext = createContext({
   params: {},
   queryParams: {},
-  navigate: {}
+  navigate: {},
+  hash: null,
+  state: {}
 })
 
 export const RouteContext = createContext({

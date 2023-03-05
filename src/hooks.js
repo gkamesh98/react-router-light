@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { routeConfig } from "./classes";
 import { RouteContext, RouterContext } from "./contexts";
 
 const useRouter = () => {
@@ -54,5 +55,32 @@ export const useQueryParams = () => {
 };
 
 export const useBrowserState = () => {
-  return window.history.state
+  const { state } = useRouter();
+  return state;
+}
+
+export const useHash = () => {
+  const { hash } = useRouter();
+  return hash
+}
+
+export const useRouteUpdater = () => {
+
+  const setHash = (hash) => {
+    routeConfig.hash = hash
+  }
+
+  const setBrowserState = (state) => {
+    routeConfig.currentState = state
+  }
+
+  const setQueryParams = (params={}) => {
+    routeConfig.queryParams = params
+  }
+
+  return {
+    setHash,
+    setBrowserState,
+    setQueryParams,
+  }
 }

@@ -1,14 +1,25 @@
-export const serialize = (obj, prefix) =>  {
-  var str = [],
-    p;
-  for (p in obj) {
-    if (obj.hasOwnProperty(p)) {
-      var k = prefix ? prefix + "[" + p + "]" : p,
-        v = obj[p];
-      str.push((v !== null && typeof v === "object") ?
-        serialize(v, k) :
-        encodeURIComponent(k) + "=" + encodeURIComponent(v));
-    }
+export const serialize = (obj = {}) =>  {
+
+  var p = '';
+  Object.entries(obj).forEach(([key, value], index) => {
+    p = p + (index ? '&' : '') + key + '=' + encodeURIComponent(JSON.stringify(value))
+  });
+
+  return p
+}
+
+export const deserialize = (str = '') => {
+  var p = {};
+  if(str){
+    str.split('&').forEach((value) => {
+      let [key, parserValue] = value.split('=');
+      if(parserValue){
+        p = {
+          ...p,
+          [key]: JSON.parse(decodeURIComponent(parserValue))
+        }
+      }
+    })
   }
-  return str.join("&");
+  return p
 }
