@@ -41,13 +41,25 @@ There are useParams, useNavigate, useQueryParams, useBrowserState available.
 ```useParams``` will fetch the values params available in the current path.
 ```useQueryParams``` will fetch search params or hash params available in the current location.
 ```useBrowserState``` will fetch the browser state that is set.
+```useHash``` will fetch  the hash that is set (if it string set other vise it will converted to queryParams)
 ```useNavigate``` used to redirect user to specific path. It hash *redirect* and *back* functions available
+```useRouteUpdater``` used to set different location params it has *setQueryParams*, *setHash* and *setBrowserState* functions
 >redirect accepts to and object of state, hash, search keyed values like 
 ```bash 
 const navigate = useNavigate()
 navigate.redirect(to, {state, hash, search})
 ```
-here search and hash objects with key value pairs or queryParams.
+
+using useRouteUpdater
+```bash
+const {setQueryParams, setHash, setBrowserState} = useRouteUpdater()
+// setHash accepts only string
+// setQueryParams accept object 
+// setBrowserState accepts object
+```
+here search and hash (if hash is object) objects with key value pairs or queryParams.
+
+
 
 **Using outside the hooks and components**
 ```
